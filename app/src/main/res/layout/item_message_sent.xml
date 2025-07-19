@@ -1,27 +1,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:layout_marginRight="2dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="8dp"
     android:orientation="horizontal"
     android:gravity="end"
-    android:paddingStart="40dp"> <!-- Adjust padding for better chat spacing -->
+    android:paddingStart="40dp">
 
-    <TextView
-        android:id="@+id/text_message_body"
+    <!-- Message bubble with timestamp and read receipts -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:layout_margin="2dp"
+        android:orientation="vertical"
         android:background="@drawable/bg_message_sent"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:lineSpacingExtra="2dp"/>
-    <TextView
-        android:id="@+id/time_stmp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:layout_gravity="end|bottom"
-        android:textSize="8sp"/>
+        android:padding="12dp">
+
+        <!-- Main message text -->
+        <TextView
+            android:id="@+id/text_message_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:lineSpacingExtra="2dp"
+            android:maxWidth="280dp"/>
+
+        <!-- Bottom row with timestamp and read receipts -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end|center_vertical"
+            android:layout_marginTop="2dp">
+
+            <!-- Timestamp -->
+            <TextView
+                android:id="@+id/time_stmp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#80000000"
+                android:textSize="10sp"
+                android:layout_marginEnd="4dp"/>
+
+            <!-- Read receipts (ticks) -->
+            <ImageView
+                android:id="@+id/read_receipt"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_single_tick_24"
+                android:contentDescription="Message status"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

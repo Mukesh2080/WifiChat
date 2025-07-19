@@ -16,8 +16,11 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -58,16 +61,30 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String messageText) {
-        messages.add(new Message(messageText, true, System.currentTimeMillis(),""));
-        adapter.notifyItemInserted(messages.size() - 1);
-
-        // TODO: send over TCP
+        long timestamp = System.currentTimeMillis();
+        Message message = new Message(messageText, true, timestamp, "sent");
+        messages.add(message);
+        int messageIndex = messages.size() - 1;
+        adapter.notifyItemInserted(messageIndex);
+        recyclerView.scrollToPosition(messages.size() - 1);
+        // Send message over TCP in a new thread
         new Thread(() -> {
             try {
                 Socket socket = new Socket(peerIp, 9876);
-                OutputStream os = socket.getOutputStream();
-                os.write(messageText.getBytes(StandardCharsets.UTF_8));
-                os.close();
+                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                writer.println(messageText); // Send message
+                writer.flush();
+
+                // Wait for acknowledgment
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String ack = reader.readLine();
+                if ("ACK".equals(ack)) {
+                    runOnUiThread(() -> {
+                        message.setStatus("Delivered");
+                        adapter.notifyItemChanged(messageIndex);
+                    });
+                }
+
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
