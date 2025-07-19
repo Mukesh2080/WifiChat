@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:orientation="horizontal"
+    android:gravity="start"
+    android:paddingEnd="40dp"> <!-- Right padding to balance the chat -->
+
+    <TextView
+        android:id="@+id/text_message_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/bg_message_received"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:maxWidth="280dp"
+        android:lineSpacingExtra="2dp"
+        android:ellipsize="none"
+        android:singleLine="false"/>
+    <TextView
+        android:id="@+id/time_stmp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:layout_gravity="end|bottom"
+        android:textSize="8sp"/>
+</LinearLayout>
