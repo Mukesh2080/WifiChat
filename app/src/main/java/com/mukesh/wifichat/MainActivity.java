@@ -8,6 +8,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements PeerUpdateListener {
 
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements PeerUpdateListene
             MessageSender.sendMessage(ip, "Hello from " + Build.MODEL);
             Intent intent = new Intent(this, ChatActivity.class);
             intent.putExtra("peer_ip", ip);
+            intent.putExtra("name", extractNames(peerList).get(position));
             startActivity(intent);
 
         });
@@ -60,5 +65,14 @@ public class MainActivity extends AppCompatActivity implements PeerUpdateListene
             peerList.addAll(updatedPeers);
             adapter.notifyDataSetChanged();
         });
+    }
+    public List<String> extractNames(List<String> originalList) {
+        return originalList.stream()
+                .map(item -> {
+                    Matcher matcher = Pattern.compile("\\((.*?)\\)").matcher(item);
+                    return matcher.find() ? matcher.group(1) : null;
+                })
+                .filter(name -> name != null)
+                .collect(Collectors.toList());
     }
 }

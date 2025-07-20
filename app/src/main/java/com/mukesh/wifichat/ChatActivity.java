@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
@@ -15,6 +17,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,6 +35,7 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText inputMessage;
     private MessageAdapter adapter;
+    private MaterialToolbar toolbar;
     private final List<Message> messages = new ArrayList<>();
 
     private String peerIp;
@@ -41,12 +46,31 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         Intent serviceIntent = new Intent(this, MessageReceiverService.class);
         startService(serviceIntent);
+        View rootView = findViewById(android.R.id.content);
+        View inputLayout = findViewById(R.id.root_lyt); // the bottom LinearLayout
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
+
+            // Apply bottom padding when keyboard is visible
+            inputLayout.setPadding(
+                    inputLayout.getPaddingLeft(),
+                    inputLayout.getPaddingTop(),
+                    inputLayout.getPaddingRight(),
+                    systemInsets.bottom
+            );
+
+            return insets;
+        });
 
         peerIp = getIntent().getStringExtra("peer_ip");
+        String name = getIntent().getStringExtra("name");
 
+        toolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.recycler_view);
         inputMessage = findViewById(R.id.edit_text_input);
         adapter = new MessageAdapter(messages);
+        if(toolbar!=null) toolbar.setTitle(name!=null?name:peerIp);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -62,7 +86,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void sendMessage(String messageText) {
         long timestamp = System.currentTimeMillis();
-        Message message = new Message(messageText, true, timestamp, "sent");
+        Message message = new Message(messageText, true, timestamp, "","sent");
         messages.add(message);
         int messageIndex = messages.size() - 1;
         adapter.notifyItemInserted(messageIndex);
@@ -94,7 +118,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void receiveMessage(String message) {
         runOnUiThread(() -> {
-            messages.add(new Message(message, false,System.currentTimeMillis(),"")); // false = received
+            messages.add(new Message(message, false,System.currentTimeMillis(),"","")); // false = received
             adapter.notifyItemInserted(messages.size() - 1);
             recyclerView.scrollToPosition(messages.size() - 1);
         });
