@@ -2,11 +2,11 @@
 
 WifiChat is a lightweight, offline, peer-to-peer chat application for Android that lets users communicate securely over the **same Wi-Fi network** — no internet or central server required.
 
-<img width="1024" height="1024" alt="app icon for wificha" src="https://github.com/user-attachments/assets/1e0d4bc3-4645-4a2d-8eee-145667713153" />
+<img width="200" height="200" alt="app icon for wificha" src="https://github.com/user-attachments/assets/1e0d4bc3-4645-4a2d-8eee-145667713153" />
 
 ---
 
-## 🚀 Features![Uploading app icon for wificha.png…]()
+## 🚀 Features
 
 
 - 📶 **Peer Discovery**: Discover nearby users automatically on the same Wi-Fi network.
